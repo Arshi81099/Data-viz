@@ -1,5 +1,12 @@
 # Data-viz
 
+## Tableau
+## D3.js
+## Raw graphs
+## Python - matplotlib
+## Flourish
+
+
 <img width="629" alt="Screenshot 2024-08-11 at 4 46 23 PM" src="https://github.com/user-attachments/assets/b0c38955-3f54-421c-89a7-0cfcd43906f5">
 
 
