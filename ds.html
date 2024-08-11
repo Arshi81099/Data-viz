@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot with D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .dot {
+            stroke: pink;
+            stroke-width: 1px;
+            fill: pink; /* Set the color of the dots to pink */
+        }
+        .axis-label {
+            font-size: 14px;
+            font-weight: bold;
+            fill: black; /* Ensure label text is visible */
+        }
+        .x-axis text, .y-axis text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weight vs. Acceleration</h1>
+    <svg width="1000" height="600"></svg>
+
+    <script>
+        // Set up margins and dimensions
+        const margin = { top: 20, right: 20, bottom: 50, left: 70 };
+        const width = 800 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+
+        // Create SVG container
+        const svg = d3.select("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Load data
+        d3.csv('auto-mpg-complete-clean.csv').then(data => {
+            // Convert string values to numbers
+            data.forEach(d => {
+                d.weight = +d.weight;
+                d.acceleration = +d.acceleration;
+            });
+
+            // Set up scales
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.weight)])
+                .range([0, width]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.acceleration)])
+                .range([height, 0]);
+
+            // Add X axis
+            const xAxis = svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(xScale).ticks(6))
+                .attr("class", "x-axis");
+
+            xAxis.append("text")
+                .attr("x", width / 2)
+                .attr("y", 40)
+                .attr("text-anchor", "middle")
+                .attr("class", "axis-label")
+                .text("Weight");
+
+            // Add Y axis
+            const yAxis = svg.append("g")
+                .call(d3.axisLeft(yScale).ticks(6))
+                .attr("class", "y-axis");
+
+            yAxis.append("text")
+                .attr("x", -height / 2)
+                .attr("y", -50)
+                .attr("text-anchor", "middle")
+                .attr("class", "axis-label")
+                .attr("transform", "rotate(-90)")
+                .text("Acceleration");
+
+            // Add scatter plot points
+            svg.selectAll(".dot")
+                .data(data)
+              .enter().append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.weight))
+                .attr("cy", d => yScale(d.acceleration))
+                .attr("r", 5);
+        });
+    </script>
+</body>
+</html>
